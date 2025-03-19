@@ -1,28 +1,26 @@
 // db.js
-require('dotenv').config();
-const MongoClient = require('mongodb').MongoClient;
+require('dotenv').config();  // Carga las variables de entorno desde el archivo .env
+const { MongoClient } = require('mongodb');  // Importa MongoClient de mongodb
 
-// MongoDB connection URL with authentication options
-let url = `${process.env.MONGO_URL}`;
+let url = process.env.MONGO_URL;  // La URL de conexión de MongoDB
+let dbInstance = null;  // Variable para almacenar la instancia de la base de datos
+const dbName = process.env.MONGO_DB;  // Nombre de la base de datos
 
-let dbInstance = null;
-const dbName = `${process.env.MONGO_DB}`;
-
+// Función para conectar a la base de datos
 async function connectToDatabase() {
-    if (dbInstance){
-        return dbInstance
-    };
+    if (dbInstance) {
+        return dbInstance;  // Si ya hay una instancia conectada, la retornamos
+    }
 
-    const client = new MongoClient(url);      
+    const client = new MongoClient(url);  // Crea un nuevo cliente de MongoDB con la URL de conexión
+    await client.connect();  // Realiza la conexión con la base de datos
 
-    // Task 1: Connect to MongoDB
-    // {{insert code}}
+    // Conecta a la base de datos y almacena la instancia en dbInstance
+    dbInstance = client.db(dbName);  
 
-    // Task 2: Connect to database giftDB and store in variable dbInstance
-    //{{insert code}}
-
-    // Task 3: Return database instance
-    // {{insert code}}
+    // Devuelve la instancia de la base de datos para que pueda ser utilizada en otros archivos
+    return dbInstance;
 }
 
+// Exporta la función para usarla en otros archivos
 module.exports = connectToDatabase;
